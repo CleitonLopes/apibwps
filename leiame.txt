@@ -1,0 +1,276 @@
+
+
+CRIANDO VERSÃO MAIS RECENTE DO LARAVEL
+**************************************
+
+-> composer create laravel/laravel nomedoprojeto
+
+VERSÕES ANTERIORES
+******************
+
+-> composer create-project --prefer-dist laravel/laravel nomedoprojeto "5.2.*"
+
+.ENV
+******************
+
+-> Fica as configurações inicias do laravel, por padrão este arquivo não é versionado no git, só o .env.example, ali fica
+configurações como banco de dados, se o projeto está em produção ou testes, se o debug for true ele apresenta os erros na tela
+se não deixar como false, a chave para criptografar os dados, dados como email e outras configurações.
+
+ESTRUTURA
+******************
+
+-> phpunit.xml: arquivo para testes unitários.
+
+-> server: executa o servidor local
+
+-> gulpfile: ferramenta front end
+
+-> DIRETORIOS
+
+-> vendor: Dependências do laravel
+
+-> tests: Onde fica os testes unitários
+
+-> storages: Armazenamento de dados do usuário, log ets do laravel
+
+-> resources
+	-> assets: arquivos css, sass, lass de front end
+	-> lang: arquivos de tradução
+	-> views: arquivos com extensao .blade.php que são templates para a aplicação caso o front seja feito aqui
+
+-> public: ponto de entrada da aplicação, o boot para os servidores como apache, ngnix etc.
+
+-> database: define varias informações referente ao banco de dados
+	-> factories: Gera dados aleatórios.
+	-> migrations: scripts para definir tabelas de banco de dados
+	-> seeders: Arquivos para popular as tabelas com banco de testes
+
+-> config: Varios arquivos de configuração para o uso
+
+-> bootstrap: Inicialização da aplicação
+
+-> app: onde encontras toda a estrutura interna de desenvolvimento da aplicação
+	-> Console:
+	-> Events:
+	-> Exceptions:
+	-> Http:
+	-> Jobs:
+	-> Listners:
+	-> Policies:
+	-> Providers:
+
+COMEÇANDO
+*************************
+
+-> Renomear a aplicação
+	php artisan app:name Jobs
+
+
+DATABASE / MIGRATIONS
+*********************
+
+-> php artisan make:migration create_jobs_table - esse comando cria uma nova migration em branco
+
+-> php artisan make:migration create_jobs_table --create=jobs - cria a migration e ja da o nome a tabela
+
+-> php artisan migrate para executar as migrations criadas
+
+-> php artisan migrate:rollback - remove as ultimas migrations executadas, conferindo o ultimo lote que está na tabela
+	migrations no banco.
+
+-> php artisan migrate:reset - apaga todas as migrações
+
+-> php artisan migrate:refresh - apaga todas a tables em sentido inverso e depois cria elas novamente
+
+-> php artisan make:migration add_date_jobs_table --table=jobs - para adicionar campos a uma table criada
+
+->  $table->date('expires_at')->nullable()->after('description'); // crio o campo date e posiciona o campo depois do campo description
+
+-> nas migrations a duas funções up e down, up sobe a migration e down volta a app no estado anterior
+
+-> É gerado no banco uma tabela migration com os dados em ordem das migrations criadas
+
+OBS: Para fazer com que a app reconheça os comandos criados dar um composer dump-autoload, para a app carregar todos os arquivos
+
+
+
+PRIMEIROS PASSOS COM ELOQUENT
+*****************************
+
+-> Sempre nossas classes model extende Model
+
+-> Usar o tinker para popular as tabelas para teste
+
+-> Exemplo usando o Eloquent
+
+-> php artisan tinker
+
+-> $job = new Jobs\Job();
+
+-> $job->user_id = 1;
+
+-> $job->title = 'Teste';
+
+-> $job->description = 'Teste de descrição';
+
+-> $job->expires_at = "2016/12/31";
+
+-> $job->save(); // Salva os dados 
+
+-> $job = Jobs\Job::find(1);
+
+-> $job->title; // retorna o title do objeto encontrado
+
+-> $job->expires_at = "2016-10-31";
+
+-> $job->save();
+
+-> PASSANDO UM ARRAY DE DADOS
+
+-> $job = Jobs\Job::create(['user_id' => 3, 'title' => 'teste2', 'description' => 'Teste de descricao', 'expires_at' => '2016-11-31']);
+
+-> ele retorna um erro dizendo que não posso passar informações em massa
+
+-> no model Job adicionar protected $fillable = ['id', 'user_id', 'title', 'description', 'expires_at'];
+
+-> $job->all() // traz todos os dados da tabela
+
+
+
+RELACIONANDO OS MODELS
+***********************
+
+-> na tabela User um usuario pode ter varias vagas
+
+-> $this->hasMany(Job::class, 'user_id');
+
+-> na tabela Job uma vaga pertence há um usuario;
+
+-> php artisan tinker
+
+-> $user = new Jobs\User();
+
+-> $user->name = 'ACME Ltda';
+
+-> $user->email = 'acme@acme.com.br';
+
+-> $user->phone = '14999999999';
+
+-> $user->save();
+
+-> Traz todas as vagas relacionadas a esse usuário
+
+-> $user->jobs;
+
+-> no tinker
+
+-> $job =  Jobs\Job();
+
+-> $job->find(1);
+
+-> Traz todos o usuário relacionado a essa vaga
+
+-> $job->user;
+
+-> Criando uma vaga a partir do usuario
+
+-> $user = Jobs\User::find(1);
+
+-> $user->jobs()->create(['title' => 'Programador Node', 'description' => 'Tem que manjar para essa vaga']);
+
+-> Retorna todas as vagas relacionadas a esse usuário
+
+-> $user->jobs;
+
+
+SEEDERS & MODEL FACTORIES
+*************************
+
+
+SEEDERS
+*******
+
+-> Facilita populando dados no banco de dados
+
+-> database/seeds
+
+-> php artisan make:seeder UsuarioTableSeeder
+
+-> ele já gera uma seed do usuario no diretorio seeds
+
+-> foi criado um for no metodo run para roda 27 vezes
+
+-> no arquivo da seed DatabaseSeeder.php fazer a chamada da seed do UsuarioTableSeeder criado
+
+-> $this->call(UserTableSeeder::class);
+
+-> php artisan migrate:refresh --seed
+
+-> ele recria as tabelas e ja popula com a seed criada do usuario
+
+
+FACTORIES
+*********
+
+-> Ele é um gerador de informações e o faker é o responsável por fornecer dados falsos
+
+-> database/factories/modelFacotry.php
+
+-> $factory->define(Jobs\User::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'email' => $faker->safeEmail,
+        'password' => bcrypt(str_random(10)),
+        'remember_token' => str_random(10),
+    ];
+});
+
+
+-> factory(Jobs\User::class) = ele recebe a builder
+
+-> factory(Jobs\User::class)->make(); = ele mostra exemplos a serem criados
+
+-> factory(Jobs\User::class)->create(); = ele grava os dados gerados no banco
+
+-> no arquivo usersTableSeeder.php 
+
+-> actory(\Jobs\User::class)->times(27)->create();
+
+-> php artisan migrate:refresh --seed
+
+--> criar seederJobs
+
+-> php artisan make:seeder nomedaseeder
+
+-> no model factory fazer uma segunda chamada com a factory
+
+-> $factory->define(Jobs\Job::class, function (Faker\Generator $faker) {
+	return [
+		'user_id' 		=> mt_rand(1, 27),
+		'title' 		=> $faker->title,
+		'description' 	=> $faker->text,
+		'expires_at'	=> $faker->date,
+
+	];
+});
+
+
+-> no aquivo jobsTableSeeder chamar a factory factory(Jobs\Job::class)->times(100)->create();
+
+-> registrar no DatabaseSeeder a seed
+
+-> php artisan migrate::refresh seed
+
+
+
+
+
+
+
+
+
+
+
+
+
