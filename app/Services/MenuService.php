@@ -9,33 +9,36 @@
 namespace App\Services;
 
 
-use App\Domains\Contracts\Validators\ValidatorRules;
+
 use App\Repositories\MenuRepository;
-use App\Repositories\MenuRepositoryEloquent;
 use App\Validators\MenuValidator;
-use Faker\Provider\bn_BD\Utils;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Contracts\Filesystem\Factory as Storage;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 class MenuService
 {
+
+
     /**
-     * @var MenuRepositoryEloquent
+     * @var MenuRepository
      */
     private $menuRepository;
     /**
      * @var MenuValidator
      */
     private $menuValidator;
+    /**
+     * @var Storage
+     */
+    private $storage;
 
-
-
-    public function __construct(MenuRepository $menuRepository, MenuValidator $menuValidator)
+    public function __construct(MenuRepository $menuRepository, MenuValidator $menuValidator, Storage $storage)
     {
+
         $this->menuRepository = $menuRepository;
         $this->menuValidator = $menuValidator;
+        $this->storage = $storage;
     }
 
     public function findById($id)
@@ -58,31 +61,19 @@ class MenuService
         {
             SetDatabase::setDatabase($data['host'], $data['dbname'], $data['user'], $data['pass']);
 
+            $content = $this->storage->get('sql/teste.sql');
 
-            $content = Storage::get('sql/bancobwps2.sql');
+            $sql = explode(';', $content);
 
-            $sql = "
-                    CREATE TABLE `acesso_conhecido` (
-                      `idipconhecido` int(11) NOT NULL AUTO_INCREMENT,
-                      `ip` varchar(100) NOT NULL,
-                      `proprietario` varchar(100) NOT NULL,
-                      `observacao` text,
-                      `idempresa` int(11) NOT NULL,
-                      PRIMARY KEY (`idipconhecido`,`idempresa`),
-                      KEY `ip` (`ip`)
-                    );";
+            //dd($sql);
 
-
-           DB::statement($sql);
-
-           // dd($content);
-
-
-
-
-
-
-
+            foreach ($sql as $key => $item)
+            {
+               if($item != '')
+               {
+                   DB::statement($item);
+               }
+            }
 
             return true;
         }
