@@ -37,5 +37,11 @@ Route::group(['prefix' => 'menu'], function()
     Route::get('', ['uses' => 'MenuController@find']);
     Route::get('{id}', ['uses' => 'MenuController@findById']);
     Route::post('', ['uses' => 'MenuController@create']);
+    Route::put('{id}', ['uses' => 'MenuController@update']);
+});
+
+Route::group(['prefix' => 'estrutura'], function()
+{
+    Route::post('', ['uses' => 'EstruturaController@create']);
 });
 

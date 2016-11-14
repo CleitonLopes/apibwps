@@ -10,7 +10,9 @@ namespace App\Services;
 
 
 
-use App\Repositories\MenuRepository;
+use App\Domains\Contracts\Repositories\MenuRepository;
+use App\Domains\Contracts\Validators\ValidatorRules;
+use App\Entities\Menu;
 use App\Validators\MenuValidator;
 use Illuminate\Contracts\Filesystem\Factory as Storage;
 use Illuminate\Support\Facades\DB;
@@ -59,23 +61,45 @@ class MenuService
     {
         try
         {
-            SetDatabase::setDatabase($data['host'], $data['dbname'], $data['user'], $data['pass']);
+            $this->menuValidator->with(['idparametroempresa' => $data['idparametroempresa']])->passesOrFail(ValidatorRules::RULE_CREATE);
 
-            $content = $this->storage->get('sql/teste.sql');
+            $menu = DB::connection('mysql-flex-admin');
+
+            $content = $this->storage->get('sql/bwpsauto.sql');
+
+            dd($content);
 
             $sql = explode(';', $content);
-
-            //dd($sql);
+            $sql = preg_replace('/\s/',' ',$sql);
 
             foreach ($sql as $key => $item)
             {
-               if($item != '')
+               if($item != "  ")
                {
-                   DB::statement($item);
+                    $menu->statement($item);
                }
             }
 
-            return true;
+            $this->update($data['idparametroempresa']);
+
+           return true;
+        }
+        catch(ValidatorException $exception)
+        {
+            return $exception;
+        }
+    }
+
+    public function update($idparametroempresa)
+    {
+        try
+        {
+            $menu = DB::connection('mysql-flex-admin');
+
+            return $menu->update("update menu set idparametroempresa = {$idparametroempresa} where idparametroempresa = ?", ['0']);
+
+
+            return $this->menuRepository->update($data, $data['idparametroempresa']);
         }
         catch(ValidatorException $exception)
         {

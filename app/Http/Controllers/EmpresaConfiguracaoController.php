@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Entities\EmpresaConfiguracao;
+
 use App\Services\EmpresaConfiguracaoService;
 use App\Transformers\EmpresaConfiguracaoTransformer;
 use EllipseSynergie\ApiResponse\Contracts\Response;

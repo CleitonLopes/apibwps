@@ -51,7 +51,6 @@ class ParametroEmpresaService
     {
         try
         {
-
             $this->parametroEmpresaValidator->with($data)->passesOrFail(ValidatorRules::RULE_CREATE);
             $idparametroempresa =  $this->findMax();
             $arr = array_merge($data, ['idparametroempresa' => $idparametroempresa]);

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Domains\Contracts\Repositories;
 
 use Prettus\Repository\Contracts\RepositoryInterface;
 

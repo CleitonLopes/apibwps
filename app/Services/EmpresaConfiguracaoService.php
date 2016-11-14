@@ -9,9 +9,10 @@
 namespace App\Services;
 
 
+use App\Domains\Contracts\Repositories\EmpresaConfiguracaoRepository;
 use App\Domains\Contracts\Validators\ValidatorRules;
 use App\Entities\EmpresaConfiguracao;
-use App\Repositories\EmpresaConfiguracaoRepository;
+
 use App\Validators\EmpresaConfiguracaoValidator;
 use Prettus\Validator\Exceptions\ValidatorException;
 
@@ -28,7 +29,6 @@ class EmpresaConfiguracaoService
 
     public function __construct(EmpresaConfiguracaoRepository $empresaConfiguracaoRepository, EmpresaConfiguracaoValidator $empresaConfiguracaoValidator)
     {
-
         $this->empresaConfiguracaoRepository = $empresaConfiguracaoRepository;
         $this->empresaConfiguracaoValidator = $empresaConfiguracaoValidator;
     }

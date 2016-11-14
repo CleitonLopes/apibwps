@@ -52,13 +52,26 @@ class MenuController extends Controller
         }
     }
 
-
-
     public function create(Request $request)
     {
         try
         {
-            $menu = $this->menuService->create($request->all());
+            $this->menuService->create($request->all());
+            return $this->response->getStatusCode();
+        }
+        catch(ValidatorException $exception)
+        {
+            throw $exception;
+        }
+    }
+
+    public function update(Request $request, $idparametroempresa)
+    {
+        try
+        {
+            $data = array_merge($request->all(), ['idparametroempresa' => $idparametroempresa]);
+            $this->menuService->update($data);
+
             return $this->response->getStatusCode();
         }
         catch(ValidatorException $exception)
