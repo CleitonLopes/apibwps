@@ -67,6 +67,11 @@ class EstruturaService
                  return false;
              }
 
+             if(!$this->createMunicipio($data))
+             {
+                 return false;
+             }
+
              return true;
 
          }
@@ -141,9 +146,19 @@ class EstruturaService
 
             $estrutura = DB::connection('mysql');
 
-            $content = $this->storage->get('sql/class_fiscal.sql');
+            $content = $this->storage->get('sql/municipio.sql');
 
             $sql = Funcoes::trataSql($content);
+
+            foreach($sql as $key => $item)
+            {
+                if($item != " ")
+                {
+                    $estrutura->statement($item);
+                }
+            }
+
+            return true;
         }
         catch(ValidatorException $exception)
         {
