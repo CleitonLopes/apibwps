@@ -11,7 +11,6 @@ class EstruturaValidator extends LaravelValidator
 
     protected $rules = [
         ValidatorRules::RULE_CREATE => [
-            'idempresa'     => 'required|integer',
             'host'          => 'required|string',
             'user'          => 'required|string',
             'pass'          => 'string',

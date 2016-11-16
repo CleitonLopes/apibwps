@@ -15,8 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
-
 Route::group(['prefix' => 'parametro-empresa'], function()
 {
     Route::get('', ['uses' => 'ParametroEmpresaController@find']);
@@ -30,6 +28,11 @@ Route::group(['prefix' => 'empresa-configuracao'], function()
 	Route::post('', ['uses' => 'EmpresaConfiguracaoController@create']);
     Route::put('{id}', ['uses' => 'EmpresaConfiguracaoController@update']);
 	
+});
+
+Route::group(['prefix' => 'empresa'], function()
+{
+    Route::post('', ['uses' => 'EmpresaController@create']);
 });
 
 Route::group(['prefix' => 'menu'], function()
