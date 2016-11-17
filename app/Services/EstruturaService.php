@@ -58,7 +58,7 @@ class EstruturaService
 
              $sql = Funcoes::trataSql($content);
 
-            /*foreach($sql as $key => $item)
+             foreach($sql as $key => $item)
              {
                  if($item != "")
                  {
@@ -134,9 +134,39 @@ class EstruturaService
              if(!$this->updateTipoProduto($conn, $idempresa))
              {
                  return false;
-             }*/
+             }
 
              if(!$this->updateTributos($conn, $idempresa))
+             {
+                 return false;
+             }
+
+            if(!$this->createUsuario($conn, $idempresa))
+             {
+                 return false;
+             }
+
+             if(!$this->updateUsuario($conn, $idempresa))
+             {
+                 return false;
+             }
+
+             if(!$this->deleteUsuario($conn, $idempresa))
+             {
+                 return false;
+             }
+
+             if(!$this->deleteEmpresa($conn, $idempresa))
+             {
+                 return false;
+             }
+
+             if(!$this->updateEcf($conn, $idempresa))
+             {
+                 return false;
+             }
+
+             if(!$this->updateCest($conn, $idempresa))
              {
                  return false;
              }
@@ -401,5 +431,101 @@ class EstruturaService
             return $exception;
         }
     }
+
+    public function createUsuario($conn, $data)
+    {
+        try
+        {
+            $usuario = "INSERT INTO `usuario` VALUES (3,'BREDAS2','6e804316035f3d229fe9c9b2d6430847','BREDAS','RUA','DAS DALIAS','SAO JOSE','9',3529005,'17503190','22122122112','11111111','1','132131','A+','2014-01-06','23132','A',1,'{$data['idempresa']}','2013-12-20','S',NULL,NULL)";
+            $usuarioConfiguracao = "INSERT INTO `usuario_configuracao` VALUES (3,3,'S','S','S','S','S','S','S','S','S','N','S','N','S','N','N','S',5.00,10.00,'{$data['idempresa']}','{$data['idempresa']}',1,18,'T')";
+
+            $conn->insert($usuario);
+            $conn->insert($usuarioConfiguracao);
+
+            return true;
+
+        }
+        catch(ValidatorException $exception)
+        {
+            return $exception;
+        }
+    }
+
+    public function updateUsuario($conn, $data)
+    {
+        try
+        {
+            $conn->update("update usuario_configuracao set idusuario = 3, idempresausuario = '{$data['idempresa']}', idempresa = '{$data['idempresa']}', idempresacheckoutimpressora = '{$data['idempresa']}' ");
+            $conn->update("update usuario set idempresa = '{$data['idempresa']}'");
+            $conn->update("update usuario_configuracao set idusuario = 1 where idusuarioconfiguracao = 1");
+            $conn->update("update usuario_configuracao set idusuario = 2 where idusuarioconfiguracao = 2");
+
+            return true;
+
+        }
+        catch(ValidatorException $exception)
+        {
+            return $exception;
+        }
+    }
+
+    public function deleteUsuario($conn, $data)
+    {
+        try
+        {
+            $conn->delete("delete from usuario_configuracao where idusuarioconfiguracao = ?", [3]);
+            $conn->delete("delete from usuario where idusuario = ?", [3]);
+
+            return true;
+        }
+        catch(ValidatorException $exception)
+        {
+            return $exception;
+        }
+    }
+
+    public function deleteEmpresa($conn, $data)
+    {
+        try
+        {
+            $conn->delete("delete from empresa where idempresa != '{$data['idempresa']}'");
+
+            return true;
+        }
+        catch(ValidatorException $exception)
+        {
+            return $exception;
+        }
+    }
+
+    public function updateEcf($conn, $data)
+    {
+        try
+        {
+            $conn->update("update aliquota_ecf set idempresausuarioalteracao = '{$data['idempresa']}', idempresa = '{$data['idempresa']}'");
+
+            return true;
+        }
+        catch(ValidatorException $excpetion)
+        {
+            return $excpetion;
+        }
+    }
+
+    public function updateCest($conn, $data)
+    {
+        try
+        {
+            $conn->update("update cest_class_fiscal set idempresa = '{$data['idempresa']}'");
+
+            return true;
+        }
+        catch(ValidatorException $excpetion)
+        {
+            return $excpetion;
+        }
+    }
+
+
 
 }
