@@ -63,11 +63,9 @@ class MenuService
         {
             $this->menuValidator->with(['idparametroempresa' => $data['idparametroempresa']])->passesOrFail(ValidatorRules::RULE_CREATE);
 
-            $menu = DB::connection('mysql-flex-admin');
+            $conn = DB::connection('mysql-flex-admin');
 
-            $content = $this->storage->get('sql/bwpsauto.sql');
-
-            dd($content);
+            $content = $this->storage->get('sql/menu.sql');
 
             $sql = explode(';', $content);
             $sql = preg_replace('/\s/',' ',$sql);
@@ -76,11 +74,11 @@ class MenuService
             {
                if($item != "  ")
                {
-                    $menu->statement($item);
+                   $conn->statement($item);
                }
             }
 
-            $this->update($data['idparametroempresa']);
+            $this->update($conn, $data['idparametroempresa']);
 
            return true;
         }
@@ -90,14 +88,11 @@ class MenuService
         }
     }
 
-    public function update($idparametroempresa)
+    public function update($conn, $idparametroempresa)
     {
         try
         {
-            $menu = DB::connection('mysql-flex-admin');
-
-            return $menu->update("update menu set idparametroempresa = {$idparametroempresa} where idparametroempresa = ?", ['0']);
-
+            return $conn->update("update menu set idparametroempresa = {$idparametroempresa} where idparametroempresa = ?", ['0']);
 
             return $this->menuRepository->update($data, $data['idparametroempresa']);
         }

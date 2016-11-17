@@ -10,11 +10,7 @@ class MenuValidator extends LaravelValidator
 
     protected $rules = [
         ValidatorRules::RULE_CREATE => [
-            'idparametroempresa' => 'required|integer',
-            'host'      => 'required|string',
-            'dbname'    => 'required|string',
-            'user'      => 'required|string',
-            'pass'      => 'string'
+            'idparametroempresa' => 'required|integer'
         ],
 
         ValidatorRules::RULE_UPDATE => [

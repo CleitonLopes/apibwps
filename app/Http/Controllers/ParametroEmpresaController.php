@@ -31,8 +31,8 @@ class ParametroEmpresaController extends Controller
     {
         try
         {
-            $parametroempresa = $this->parametroEmpresaService->find();
-            return $this->response->withCollection($parametroempresa, new ParametroEmpresaTransformer());
+            $parametroempresa = $this->parametroEmpresaService->findMax();
+            return $parametroempresa;
 
         }
         catch(ValidatorException $exception)
