@@ -43,20 +43,12 @@ class MenuService
         $this->storage = $storage;
     }
 
-    public function findById($id)
-    {
-        try
-        {
-            $this->menuValidator->with(['idparametroempresa' => $id])->passesOrFail(ValidatorRules::RULE_FIND);
-            return $this->menuRepository->find($id);
-        }
-        catch(ValidatorException $exception)
-        {
-            return $exception;
-        }
-    }
-
-
+    /**
+     * @param array $data
+     * Cria a estrutura do menu com idparametroempresa 0 por padrao
+     * Chama a classe que faz update com o idparamentroempresa corrego
+     * @return bool|\Exception|ValidatorException
+     */
     public function create(Array $data)
     {
         try
@@ -88,6 +80,11 @@ class MenuService
         }
     }
 
+    /**
+     * @param $conn
+     * @param $idparametroempresa
+     * @return \Exception|mixed|ValidatorException
+     */
     public function update($conn, $idparametroempresa)
     {
         try

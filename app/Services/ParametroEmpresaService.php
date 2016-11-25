@@ -34,12 +34,15 @@ class ParametroEmpresaService
         $this->parametroEmpresaValidator = $parametroEmpresaValidator;
     }
 
+    /**
+     * @return array collection com idempresa e idparamentroempresa
+     * @throws ValidatorException
+     */
     public function find()
     {
         try
         {
-            $parametroEmpresa = $this->parametroEmpresaRepository->all();
-            return $parametroEmpresa;
+            return $this->parametroEmpresaRepository->all();
         }
         catch(ValidatorException $exception)
         {
@@ -47,6 +50,11 @@ class ParametroEmpresaService
         }
     }
 
+    /**
+     * @param array $data
+     * @return object item com dados criados
+     * @throws ValidatorException
+     */
     public function create(Array $data)
     {
         try
@@ -59,10 +67,14 @@ class ParametroEmpresaService
         }
         catch(ValidatorException $exception)
         {
-            throw $exception;
+            return $exception;
         }
     }
 
+    /**
+     * @return maior idparamentroempresa
+     * @throws ValidatorException
+     */
     public function findMax()
     {
         try
@@ -72,7 +84,7 @@ class ParametroEmpresaService
         }
         catch(ValidatorException $exception)
         {
-            throw $exception;
+            return $exception;
         }
     }
 }

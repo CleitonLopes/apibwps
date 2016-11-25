@@ -26,25 +26,25 @@ class EmpresaConfiguracaoService
      * @var EmpresaConfiguracaoValidator
      */
     private $empresaConfiguracaoValidator;
+    /**
+     * @var MenuService
+     */
+    private $menuService;
 
-    public function __construct(EmpresaConfiguracaoRepository $empresaConfiguracaoRepository, EmpresaConfiguracaoValidator $empresaConfiguracaoValidator)
+    public function __construct(EmpresaConfiguracaoRepository $empresaConfiguracaoRepository, EmpresaConfiguracaoValidator $empresaConfiguracaoValidator, MenuService $menuService)
     {
         $this->empresaConfiguracaoRepository = $empresaConfiguracaoRepository;
         $this->empresaConfiguracaoValidator = $empresaConfiguracaoValidator;
+        $this->menuService = $menuService;
     }
 
-    public function find()
-    {
-        try
-        {
-            return $this->empresaConfiguracaoRepository->all();
-        }
-        catch(ValidatorException $exception)
-        {
-            throw $exception;
-        }
-    }
-
+    /**
+     * @param array $data
+     * Cria os dados da tabela empresa-configuracao
+     * Se o resultado for true chama a classe menuService
+     * @return bool|\Exception|ValidatorException
+     * @throws ValidatorException
+     */
     public function create(Array $data)
     {
         try
@@ -52,14 +52,25 @@ class EmpresaConfiguracaoService
             $this->empresaConfiguracaoValidator->with($data)->passesOrFail(ValidatorRules::RULE_CREATE);
             $idempresaconfiguracao = $this->findMax();
             $arr = array_merge($data, ['idempresaconfiguracao' => $idempresaconfiguracao]);
-            return $this->empresaConfiguracaoRepository->create($arr);
+
+            if($this->empresaConfiguracaoRepository->create($arr))
+            {
+                return $this->menuService->create($data);
+            }
+
+            return false;
         }
         catch(ValidatorException $exception)
         {
-            throw $exception;
+            return $exception;
         }
     }
 
+    /**
+     * @return int
+     * Busca o maior idempresaconfiguracao
+     * @throws ValidatorException
+     */
     public function findMax()
     {
         try
@@ -69,20 +80,7 @@ class EmpresaConfiguracaoService
         }
         catch(ValidatorException $exception)
         {
-            throw $exception;
-        }
-    }
-
-    public function update(Array $data)
-    {
-        try
-        {
-            $this->empresaConfiguracaoValidator->with($data)->passesOrFail(ValidatorRules::RULE_UPDATE);
-            return $this->empresaConfiguracaoRepository->update($data, $data['idparametroempresa']);
-        }
-        catch(ValidatorException $exception)
-        {
-            throw $exception;
+            return $exception;
         }
     }
 }

@@ -27,44 +27,25 @@ class EmpresaConfiguracaoController extends Controller
         $this->response = $response;
     }
 
-    public function find()
-    {
-        try
-        {
-            $empresasaconfiguracao = $this->empresaConfiguracaoService->find();
-            return $this->response->withCollection($empresasaconfiguracao, new EmpresaConfiguracaoTransformer());
-        }
-        catch(ValidatorException $exception)
-        {
-            throw $exception;
-        }
-    }
-
+    /**
+     * @param Request $request
+     * @return int
+     * @throws ValidatorException
+     */
     public function create(Request $request)
     {
         try
         {
             $empresaconfiguracao = $this->empresaConfiguracaoService->create($request->all());
-            return $this->response->withItem($empresaconfiguracao, new EmpresaConfiguracaoTransformer());
-        }
-        catch(ValidatorException $exception)
-        {
-            throw $exception;
-        }
-    }
 
-    public function update(Request $request, $id)
-    {
-        try
-        {
-            $data = array_merge($request->all(), ['idparametroempresa' => $id]);
-            $empresaconfiguracao = $this->empresaConfiguracaoService->update($data);
-            dd($empresaconfiguracao);
-            return $this->response->withItem($empresaconfiguracao, new EmpresaConfiguracaoTransformer());
+            if($empresaconfiguracao)
+            {
+                return $this->response->getStatusCode();
+            }
         }
         catch(ValidatorException $exception)
         {
-            throw $exception;
+            return $exception;
         }
     }
 }

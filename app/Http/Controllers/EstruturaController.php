@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Services\EstruturaService;
+use App\Services\Utils\ResponseService;
+use EllipseSynergie\ApiResponse\Laravel\Response;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+
 use Prettus\Validator\Exceptions\ValidatorException;
 
 class EstruturaController extends Controller
@@ -17,12 +19,12 @@ class EstruturaController extends Controller
     /**
      * @var Response
      */
-    private $response;
+    private $responseService;
 
-    public function __construct(EstruturaService $estruturaService, Response $response)
+    public function __construct(EstruturaService $estruturaService, ResponseService $responseService)
     {
         $this->estruturaService = $estruturaService;
-        $this->response = $response;
+        $this->responseService = $responseService;
     }
 
     public function create(Request $request)
@@ -30,15 +32,11 @@ class EstruturaController extends Controller
         try
         {
             $estrutura = $this->estruturaService->create($request->all());
-
-            if($estrutura)
-            {
-                return $this->response->getStatusCode();
-            }
+            return $this->responseService->createResponse("200", $estrutura);
         }
         catch(ValidatorException $exception)
         {
-            throw $exception;
+            return  $this->responseService->errorWrongArgs($exception->getMessageBag());
         }
     }
 }

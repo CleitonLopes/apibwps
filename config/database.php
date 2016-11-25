@@ -66,13 +66,28 @@ return [
             'engine' => null,
         ],
 
+        // Producao
+       /* 'mysql-flex-admin' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', '54.233.99.17'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'flexadmin'),
+            'username' => env('DB_USERNAME', 'flexadmin'),
+            'password' => env('DB_PASSWORD', '#b4nc0fl3x2015'),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],*/
+
+        // local
         'mysql-flex-admin' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'flexadminteste'),
             'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
             'password' => env('DB_PASSWORD', ''),
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',

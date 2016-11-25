@@ -45,10 +45,13 @@ class EstruturaService
      {
          try
          {
-             $dadosConexao = Funcoes::trataArrayDadosConexao($data['dados_conexao']);
+
+             $this->estruturaValidator->with($data['dadosConexao']);
+
+             $dadosConexao = Funcoes::trataArrayDadosConexao($data['dadosConexao']);
              $idempresa = Funcoes::trataArrayIDEmpresa($data['idempresa']);
 
-             SetDatabase::setDatabase($dadosConexao['host'], $dadosConexao['dbname'], $dadosConexao['user'], $dadosConexao['pass']);
+             SetDatabase::setDatabase($dadosConexao['host'], $dadosConexao['db'], $dadosConexao['user'], $dadosConexao['pass']);
 
              $conn = DB::connection('mysql');
 
@@ -81,10 +84,12 @@ class EstruturaService
                  return false;
              }
 
+
              if(!$this->empresaService->create($data))
              {
                  return false;
              }
+
 
              if(!$this->deleteEmpresaConfiguracao($conn))
              {

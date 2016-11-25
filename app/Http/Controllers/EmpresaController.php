@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Services\EmpresaService;
-use App\Transformers\EmpresaTransformer;
 use EllipseSynergie\ApiResponse\Contracts\Response;
 use Illuminate\Http\Request;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 class EmpresaController extends Controller
 {
+
     /**
      * @var EmpresaService
      */
@@ -26,12 +26,24 @@ class EmpresaController extends Controller
         $this->response = $response;
     }
 
+    public function find()
+    {
+        try
+        {
+            dd('teste');
+        }
+        catch(ValidatorException $exception)
+        {
+            return $exception;
+        }
+    }
+
     public function create(Request $request)
     {
         try
         {
             $empresa = $this->empresaService->create($request->all());
-            return $this->response->withItem($empresa, new EmpresaTransformer());
+            return $empresa;
         }
         catch(ValidatorException $exception)
         {

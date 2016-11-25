@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\ParametroEmpresaService;
+use App\Services\Utils\ResponseService;
 use App\Transformers\ParametroEmpresaTransformer;
 use EllipseSynergie\ApiResponse\Laravel\Response;
 use Illuminate\Http\Request;
@@ -19,39 +20,48 @@ class ParametroEmpresaController extends Controller
     /**
      * @var Response
      */
-    private $response;
+    private $responseService;
 
-    public function __construct(ParametroEmpresaService $parametroEmpresaService, Response $response)
+    public function __construct(ParametroEmpresaService $parametroEmpresaService, ResponseService $responseService)
     {
         $this->parametroEmpresaService = $parametroEmpresaService;
-        $this->response = $response;
+        $this->responseService = $responseService;
     }
 
+    /**
+     * @return Array idempresa, idparamentroempresa
+     * @throws ValidatorException
+     */
     public function find()
     {
         try
         {
-            $parametroempresa = $this->parametroEmpresaService->findMax();
-            return $parametroempresa;
+            $parametroempresa = $this->parametroEmpresaService->find();
+            return $this->responseService->withCollection($parametroempresa, new ParametroEmpresaTransformer());
 
         }
         catch(ValidatorException $exception)
         {
-            throw $exception;
+            throw $this->responseService->errorWrongArgs($exception->getMessageBag());
         }
     }
 
+    /**
+     * @param Request $request
+     * @return object item com dados criados
+     * @throws ValidatorException
+     */
     public function create(Request $request)
     {
         try
         {
             $dadosConexao = $this->parametroEmpresaService->create($request->all());
-            return $this->response->withItem($dadosConexao, new ParametroEmpresaTransformer());
+            return $this->responseService->withItem($dadosConexao, new ParametroEmpresaTransformer());
 
         }
         catch(ValidatorException $exception)
         {
-            throw $exception;
+            throw $this->responseService->errorWrongArgs($exception->getMessageBag());
         }
     }
 }

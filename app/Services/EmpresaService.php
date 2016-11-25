@@ -37,11 +37,11 @@ class EmpresaService
     {
         try
         {
-            $dadosConexao = Funcoes::trataArrayDadosConexao($data['dados_conexao']);
+            $dadosConexao = Funcoes::trataArrayDadosConexao($data['dadosConexao']);
 
-            SetDatabase::setDatabase($dadosConexao['host'], $dadosConexao['dbname'], $dadosConexao['user'], $dadosConexao['pass']);
+            SetDatabase::setDatabase($dadosConexao['host'], $dadosConexao['db'], $dadosConexao['user'], $dadosConexao['pass']);
 
-            $dadosEmpresa = Funcoes::trataArrayDadosEmpresa($data['dados_empresa']);
+            $dadosEmpresa = Funcoes::trataArrayDadosEmpresa($data['dadosEmpresa']);
             $this->empresaValidator->with($dadosEmpresa)->passesOrFail(ValidatorRules::RULE_CREATE);
 
             return $this->empresaRepository->create($dadosEmpresa);
@@ -49,7 +49,7 @@ class EmpresaService
         }
         catch(ValidatorException $exception)
         {
-            throw $exception;
+            return $exception;
         }
     }
 }

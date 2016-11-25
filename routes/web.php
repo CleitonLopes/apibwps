@@ -24,23 +24,7 @@ Route::group(['prefix' => 'parametro-empresa'], function()
 
 Route::group(['prefix' => 'empresa-configuracao'], function()
 {
-	Route::get('', ['uses' => 'EmpresaConfiguracaoController@find']);
 	Route::post('', ['uses' => 'EmpresaConfiguracaoController@create']);
-    Route::put('{id}', ['uses' => 'EmpresaConfiguracaoController@update']);
-	
-});
-
-Route::group(['prefix' => 'empresa'], function()
-{
-    Route::post('', ['uses' => 'EmpresaController@create']);
-});
-
-Route::group(['prefix' => 'menu'], function()
-{
-    Route::get('', ['uses' => 'MenuController@find']);
-    Route::get('{id}', ['uses' => 'MenuController@findById']);
-    Route::post('', ['uses' => 'MenuController@create']);
-    Route::put('{id}', ['uses' => 'MenuController@update']);
 });
 
 Route::group(['prefix' => 'estrutura'], function()

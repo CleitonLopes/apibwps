@@ -14,7 +14,7 @@ class EstruturaValidator extends LaravelValidator
             'host'          => 'required|string',
             'user'          => 'required|string',
             'pass'          => 'string',
-            'dbname'        => 'required|string',
+            'db'            => 'required|string',
         ],
 
 

@@ -48,10 +48,10 @@ class Funcoes
 
         foreach($data as $key => $item)
         {
-            $arr['host'] = $item['host'];
-            $arr['user'] = $item['user'];
-            $arr['dbname'] = $item['dbname'];
-            $arr['pass'] = $item['pass'];
+            $arr['host']    = $item['host'];
+            $arr['user']    = $item['user'];
+            $arr['db']      = $item['db'];
+            $arr['pass']    = $item['pass'];
         }
 
         return $arr;
