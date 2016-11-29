@@ -26,18 +26,6 @@ class EmpresaController extends Controller
         $this->response = $response;
     }
 
-    public function find()
-    {
-        try
-        {
-            dd('teste');
-        }
-        catch(ValidatorException $exception)
-        {
-            return $exception;
-        }
-    }
-
     public function create(Request $request)
     {
         try

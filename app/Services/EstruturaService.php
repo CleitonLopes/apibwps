@@ -11,9 +11,9 @@ namespace App\Services;
 
 use App\Domains\Contracts\Validators\ValidatorRules;
 use App\Services\Utils\Funcoes;
+use App\Validators\EmpresaValidator;
 use App\Validators\EstruturaValidator;
 use Illuminate\Contracts\Filesystem\Factory as Storage;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Prettus\Validator\Exceptions\ValidatorException;
 
@@ -32,23 +32,28 @@ class EstruturaService
      * @var EmpresaService
      */
     private $empresaService;
+    /**
+     * @var EmpresaValidator
+     */
+    private $empresaValidator;
 
-    public function __construct(EstruturaValidator $estruturaValidator, Storage $storage, EmpresaService $empresaService)
+    public function __construct(EstruturaValidator $estruturaValidator, Storage $storage, EmpresaService $empresaService, EmpresaValidator $empresaValidator)
     {
 
         $this->estruturaValidator = $estruturaValidator;
         $this->storage = $storage;
         $this->empresaService = $empresaService;
+        $this->empresaValidator = $empresaValidator;
     }
 
      public function create(Array $data)
      {
          try
          {
-
-             $this->estruturaValidator->with($data['dadosConexao']);
+             $this->estruturaValidator->with($data['dadosConexao'])->passes(ValidatorRules::RULE_CREATE);
 
              $dadosConexao = Funcoes::trataArrayDadosConexao($data['dadosConexao']);
+
              $idempresa = Funcoes::trataArrayIDEmpresa($data['idempresa']);
 
              SetDatabase::setDatabase($dadosConexao['host'], $dadosConexao['db'], $dadosConexao['user'], $dadosConexao['pass']);
@@ -83,7 +88,6 @@ class EstruturaService
              {
                  return false;
              }
-
 
              if(!$this->empresaService->create($data))
              {

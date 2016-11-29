@@ -91,7 +91,7 @@ class MenuService
         {
             return $conn->update("update menu set idparametroempresa = {$idparametroempresa} where idparametroempresa = ?", ['0']);
 
-            return $this->menuRepository->update($data, $data['idparametroempresa']);
+           // return $this->menuRepository->update($data, $data['idparametroempresa']);
         }
         catch(ValidatorException $exception)
         {

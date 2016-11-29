@@ -42,6 +42,7 @@ class EmpresaService
             SetDatabase::setDatabase($dadosConexao['host'], $dadosConexao['db'], $dadosConexao['user'], $dadosConexao['pass']);
 
             $dadosEmpresa = Funcoes::trataArrayDadosEmpresa($data['dadosEmpresa']);
+
             $this->empresaValidator->with($dadosEmpresa)->passesOrFail(ValidatorRules::RULE_CREATE);
 
             return $this->empresaRepository->create($dadosEmpresa);
